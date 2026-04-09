@@ -1,0 +1,13 @@
+# Python
+__pycache__/
+*.pyc
+
+# Qtile temp files
+.config/qtile/__pycache__/
+
+# OS junk
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
