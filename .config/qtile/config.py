@@ -213,7 +213,13 @@ screens = [
     Screen(
         bottom=bar.Bar(
             [
-                
+                widget.TextBox(
+                     text="  ",
+                     fontsize=18,
+                     mouse_callbacks={
+                         "Button1": lazy.spawn("rofi -show drun -theme fullscreen-preview")
+                    },
+                            ),
                 widget.GroupBox(rounded=True, highlight_method='block'),
                 widget.Prompt(),
                 widget.WindowName(),
@@ -237,7 +243,11 @@ screens = [
                 widget.Clock(format="%a,  %d/%m/%Y,  %H:%M:%S %p", mouse_callbacks={"Button1": lazy.spawn("gsimplecal")}),
                 widget.QuickExit(default_text="(x)"),
             ],
-            24,
+
+            size=32,          # ← height
+            opacity=0.5,      # ← transparency (0 → 1)
+            margin=[3, 4, 6, 4],  # ← spacing around bar (top, right, bottom, left)
+            
             # border_width=[2, 0, 2, 0],  # Draw top and bottom borders
             # border_color=["ff00ff", "000000", "ff00ff", "000000"]  # Borders are magenta
         ),
@@ -302,6 +312,16 @@ wl_xcursor_size = 24
 @hook.subscribe.startup_once
 def autostart():
     subprocess.Popen(["/usr/lib/polkit-gnome/polkit-gnome-authentication-agent-1"])
+
+
+@hook.subscribe.startup_once
+def autostart():
+    subprocess.Popen([
+        "picom",
+        "--backend", "glx",
+        "--vsync"
+    ])
+
 
 @hook.subscribe.setgroup
 def launch_notebook_on_group_0():
