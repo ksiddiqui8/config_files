@@ -245,7 +245,7 @@ screens = [
             ],
 
             size=32,          # ← height
-            opacity=0.5,      # ← transparency (0 → 1)
+            opacity=0.7,      # ← transparency (0 → 1)
             margin=[3, 4, 6, 4],  # ← spacing around bar (top, right, bottom, left)
             
             # border_width=[2, 0, 2, 0],  # Draw top and bottom borders
@@ -312,15 +312,12 @@ wl_xcursor_size = 24
 @hook.subscribe.startup_once
 def autostart():
     subprocess.Popen(["/usr/lib/polkit-gnome/polkit-gnome-authentication-agent-1"])
-
-
-@hook.subscribe.startup_once
-def autostart():
     subprocess.Popen([
         "picom",
         "--backend", "glx",
         "--vsync"
     ])
+    subprocess.call([os.path.expanduser("~/.config/qtile/autostart.sh")])
 
 
 @hook.subscribe.setgroup
@@ -392,7 +389,22 @@ def setup_group_9():
             subprocess.Popen(app["cmd"])
 
 
+@hook.subscribe.setgroup
+def launch_earth_monitor_on_group_0():
+    if qtile.current_group.name != "0":
+        return
 
+    try:
+        output = subprocess.check_output(["pgrep", "-f", "earth_monitor_dashboard.py"])
+        if output:
+            return
+    except subprocess.CalledProcessError:
+        pass
+
+    subprocess.Popen([
+        sys.executable,
+        os.path.expanduser("~/.config/qtile/qtile_dashboard/earth_monitor_dashboard.py")
+    ])
 
 # XXX: Gasp! We're lying here. In fact, nobody really uses or cares about this
 # string besides java UI toolkits; you can see several discussions on the
